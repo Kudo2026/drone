@@ -1,5 +1,5 @@
 %% Initialize settings
-% set path
+% set patha
 clear allq
 cf = pwd;
 
