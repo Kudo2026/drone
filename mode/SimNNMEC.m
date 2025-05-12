@@ -8,6 +8,7 @@ cellfun(@(xx) addpath(xx), tmp, 'UniformOutput', false);
 close all hidden; clear ; clc;
 userpath('clear');
 end
+
 %% 20回まとめてシミュレーションする
 clear; close all; clc;
 for j = 1:1
@@ -66,6 +67,7 @@ for j = 1:1
     agent(1).controller = FUNCTIONAL_HLC(agent(1),Controller_FHL(dt));
     agent(2).controller = FUNCTIONAL_MECNNC(agent(2),Controller_FHLMECNN(dt));
     
+
     Pn_estimator.state = initial_state;
     Pa_estimator.state = initial_state;
     run("ExpBase");
