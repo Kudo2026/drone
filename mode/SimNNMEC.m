@@ -8,12 +8,6 @@ cellfun(@(xx) addpath(xx), tmp, 'UniformOutput', false);
 close all hidden; clear ; clc;
 userpath('clear');
 end
-%% クープマンモデルの設定
-model_file = 'EstimationResult_12state_2_7_Exp_sprine+zsprine+P2Pz_torque_incon_150data_vzからz算出.mat';
-load(model_file,'est');
-A=est.A;
-B=est.B;
-C=est.C;
 %% 20回まとめてシミュレーションする
 clear; close all; clc;
 for j = 1:1
@@ -52,27 +46,26 @@ for j = 1:1
     agent(1).sensor = DIRECT_SENSOR(agent(1), 0.0); % modeファイル内で回すとき
     agent(2).sensor = DIRECT_SENSOR(agent(2), 0.0); % modeファイル内で回すとき
 
-    % num = j;
-    % reference_file = strcat("Exp_2_4_", num2str(num));
+    num = j;
+    reference_file = strcat("Exp_2_4_", num2str(num));
     % agent(1).reference = TIME_VARYING_REFERENCE(agent(1),{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
     % agent(2).reference = TIME_VARYING_REFERENCE(agent(2),{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
     % agent(1).reference = TIME_VARYING_REFERENCE(agent(1),{"gen_ref_saddle",{"freq",5,"orig",[0;0;1],"size",[2,2,0.5]},"HL"});
     % agent(2).reference = TIME_VARYING_REFERENCE(agent(2),{"gen_ref_saddle",{"freq",5,"orig",[0;0;1],"size",[2,2,0.5]},"HL"});
     % agent(1).reference = TIME_VARYING_REFERENCE(agent(1),{"gen_ref_p2p",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
     % agent(2).reference = TIME_VARYING_REFERENCE(agent(2),{"gen_ref_p2p",{"freq",5,"init",[0;0;1],"radius",1.0},"HL"});
-    agent(1).reference = TIME_VARYING_REFERENCE(agent(1),{"Case_study_trajectory",{[0,0,1]},"HL"});
-    agent(2).reference = TIME_VARYING_REFERENCE(agent(2),{"Case_study_trajectory",{[0,0,1]},"HL"});
+    
+
     % agent(1).reference = TIME_VARYING_REFERENCE(agent(1),{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0,"i",j},"HL"});
     % agent(2).reference = TIME_VARYING_REFERENCE(agent(2),{"gen_ref_circle",{"freq",5,"init",[0;0;1],"radius",1.0,"i",j},"HL"});
     % agent(1).reference = TIME_VARYING_REFERENCE(agent(1),{"gen_ref_saddle",{"freq",5,"orig",[0;0;1],"size",[2,2,0.5],"i",j},"HL"});
     % agent(2).reference = TIME_VARYING_REFERENCE(agent(2),{"gen_ref_saddle",{"freq",5,"orig",[0;0;1],"size",[2,2,0.5],"i",j},"HL"});
-    % agent(1).reference = MY_WAY_POINT_REFERENCE(agent(1),generate_spline_curve_ref(readmatrix("waypoint.xlsx",'Sheet','origin'),1));%コマンドでシートを選びたいときは位置2を1にする
-    % agent(2).reference = MY_WAY_POINT_REFERENCE(agent(2),generate_spline_curve_ref(readmatrix("waypoint.xlsx",'Sheet','origin'),1));%コマンドでシートを選びたいときは位置2を1にする
+    agent(1).reference = MY_WAY_POINT_REFERENCE(agent(1),generate_spline_curve_ref(readmatrix("waypoint.xlsx",'Sheet','origin'),1));%コマンドでシートを選びたいときは位置2を1にする
+    agent(2).reference = MY_WAY_POINT_REFERENCE(agent(2),generate_spline_curve_ref(readmatrix("waypoint.xlsx",'Sheet','origin'),1));%コマンドでシートを選びたいときは位置2を1にする
     % agent.controller = FUNCTIONAL_HLC(agent,Controller_FHL(dt));
     agent(1).controller = FUNCTIONAL_HLC(agent(1),Controller_FHL(dt));
-    % agent(2).controller = FUNCTIONAL_MECNNC(agent(2),Controller_FHLMECNN(dt));
-    agent(2).controller = MPC_CONTROLLER_KOOPMAN_quadprog_simulation(agent(2),Controller_MPC_Koopman(agent(2)));
-
+    agent(2).controller = FUNCTIONAL_MECNNC(agent(2),Controller_FHLMECNN(dt));
+    
     Pn_estimator.state = initial_state;
     Pa_estimator.state = initial_state;
     run("ExpBase");
